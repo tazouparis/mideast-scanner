@@ -1,0 +1,41 @@
+name: MidEast Intel Scanner 🌍
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Installer dépendances
+        run: pip install feedparser -q
+
+      - name: Lancer le scanner
+        env:
+          WA_PHONE:      ${{ secrets.WA_PHONE }}
+          WA_APIKEY:     ${{ secrets.WA_APIKEY }}
+          SEUIL_NIVEAU:  "2"
+        run: python server_scanner.py
+
+      - name: Sauvegarder l'état
+        run: |
+          git config user.name  "MidEast Scanner Bot"
+          git config user.email "scanner@noreply.github.com"
+          git add state.json
+          git diff --staged --quiet || git commit -m "chore: update scanner state [skip ci]" && git push
