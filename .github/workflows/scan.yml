@@ -8,6 +8,17 @@ on:
 permissions:
   contents: write
 
+  env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+```
+
+**Sur GitHub :**
+1. Ton repo → `.github/workflows/scan.yml` → crayon ✏️
+2. Cherche la ligne `jobs:` et ajoute juste au-dessus :
+```
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   scan:
     runs-on: ubuntu-latest
