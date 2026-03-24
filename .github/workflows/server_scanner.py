@@ -176,7 +176,7 @@ def sauvegarder_etat(etat: dict):
 # ── Envoi WhatsApp ────────────────────────────────────────────
 def envoyer_whatsapp(phone: str, apikey: str, message: str) -> bool:
     try:
-        texte    = ''.join(c for c in message if ord(c) < 128).strip()
+        texte    = message.strip()
         text_enc = urllib.parse.quote_plus(texte)
         url = f'https://api.callmebot.com/whatsapp.php?phone={phone}&text={text_enc}&apikey={apikey}'
         result = subprocess.run(
@@ -195,11 +195,11 @@ NIVEAUX_LABEL = {0: 'INFO', 1: 'ALERTE', 2: 'CRITIQUE'}
 NIVEAUX_ICONE = {0: 'i', 1: '!', 2: '!!'}
 
 def formater_message(article: Article) -> str:
-    avion = '[AVIATION] ' if article.aviation else ''
+    icone = '✈️' if article.aviation else '📡'
     niv   = NIVEAUX_LABEL.get(article.niveau, 'ALERTE')
     tags  = ' | '.join(article.tags[:3]).upper() if article.tags else ''
     return (
-        f"[{niv}] {avion}MidEast Scanner\n"
+        f"{icone} *MidEast Scanner* [{niv}]\n"
         f"{article.titre}\n"
         f"Source: {article.source}\n"
         f"{tags}\n"
